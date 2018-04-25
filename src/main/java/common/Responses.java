@@ -1,10 +1,6 @@
 package common;
-import models.Student;
-
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import java.net.URI;
-import java.util.List;
 
 public class Responses {
     public static Response notFound(){

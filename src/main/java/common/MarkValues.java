@@ -24,17 +24,4 @@ public class MarkValues {
         }
         return "-1";
     }
-
-    public static List<String> availableMarks(){
-        List<String> marks = new ArrayList<>();
-        marks.add("2");
-        marks.add("2.5");
-        marks.add("3");
-        marks.add("3.5");
-        marks.add("4");
-        marks.add("4.5");
-        marks.add("5");
-        return marks;
-    }
-
 }
