@@ -62,14 +62,20 @@ public class Server {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Student st1 = new Student("Adam", "Cwian", date);
+        Student st1 = new Student("Name1", "Surname1", date);
         dao.saveStudent(st1);
+
+        Student st2 = new Student("Name2", "Surname2", date);
+        dao.saveStudent(st2);
 
         Mark g1 = new Mark("3.5", math);
         Mark g2 = new Mark("5", economy);
-
         marksService.addMark(st1.getIndex(),g1);
         marksService.addMark(st1.getIndex(),g2);
 
+        Mark g3 = new Mark("5", physic);
+        Mark g4 = new Mark("4", economy);
+        marksService.addMark(st2.getIndex(),g3);
+        marksService.addMark(st2.getIndex(),g4);
     }
 }

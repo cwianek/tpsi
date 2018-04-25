@@ -3,7 +3,6 @@ package resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import common.MarkValues;
 import common.Responses;
 import models.Mark;
 import models.Student;
