@@ -1,5 +1,6 @@
 package service;
 
+import dao.IDao;
 import dao.MongoDao;
 import models.Mark;
 import models.Student;
@@ -12,12 +13,12 @@ import resource.MarksResource;
 import static org.junit.Assert.*;
 
 public class MarksServiceTest {
-    MongoDao mongoDao;
+    IDao dao;
     MarksService marksService;
 
     @Before
     public void setUp() throws Exception {
-        mongoDao = MongoDao.getInstance();
+        dao = TestMongoDao.getInstance();
         marksService = MarksService.getInstance();
     }
 
@@ -44,6 +45,19 @@ public class MarksServiceTest {
         Mark updatedMark = marksService.getMark(index,mark.getId());
         assertTrue(updatedMark.getDate() == null);
         assertTrue(updatedMark.getValue().equals("2.5"));
+    }
+
+    @Test
+    public void deleteMarkTest() throws Exception {
+        Student student = TestUtils.createNewStudent("Name", "Surname", "03-01-1994");
+        int index = student.getIndex();
+        String markValue = "3.5";
+        Mark mark = addMark(index,markValue);
+        int id = mark.getId();
+
+        marksService.deleteMark(index,id);
+        Mark deletedMark = marksService.getMark(index,id);
+        assertNull(deletedMark);
     }
 
     private Mark addMark(int index, String markValue){

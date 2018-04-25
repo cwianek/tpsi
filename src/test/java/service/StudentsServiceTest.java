@@ -1,23 +1,18 @@
 package service;
 
-import dao.MongoDao;
+import dao.IDao;
 import models.Student;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static org.junit.Assert.*;
 
 public class StudentsServiceTest {
 
-    MongoDao mongoDao;
+    IDao mongoDao;
     @Before
     public void setUp() throws Exception {
-        mongoDao = MongoDao.getInstance();
+        mongoDao = TestMongoDao.getInstance();
     }
 
     @Test
@@ -51,6 +46,19 @@ public class StudentsServiceTest {
         Student updatedStudent = mongoDao.getStudent(index);
         assertTrue(updatedStudent.getName().equals(changedName));
         assertTrue(updatedStudent.getSurname().equals(surname));
+    }
+
+    @Test
+    public void deleteStudentTest() throws Exception {
+        String name = "TestStudentName";
+        String surname = "TestStudentSurname";
+        String date = "01-01-1994";
+        Student student = TestUtils.createNewStudent(name,surname,date);
+        int index = student.getIndex();
+        mongoDao.delete(student);
+
+        Student deletedStudent = mongoDao.getStudent(index);
+        assertNull(deletedStudent);
     }
 
 

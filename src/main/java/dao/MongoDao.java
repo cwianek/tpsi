@@ -1,6 +1,8 @@
 package dao;
 
 import com.mongodb.MongoClient;
+import com.sun.xml.internal.bind.v2.model.core.ID;
+import lombok.Getter;
 import models.Indexes;
 import models.Mark;
 import models.Student;
@@ -15,13 +17,14 @@ import org.mongodb.morphia.query.UpdateOperations;
 import java.util.List;
 
 public class MongoDao implements IDao {
-    private static MongoDao mongoDao;
+    @Getter  protected String mongoName = "TPSI";
+    protected static IDao mongoDao;
     private final static Morphia morphia = new Morphia();
     private static Datastore datastore;
 
-    private MongoDao(){
+    protected MongoDao(){
         morphia.mapPackage("model");
-        datastore = morphia.createDatastore(new MongoClient("localhost", 27017), "TPSI");
+        datastore = morphia.createDatastore(new MongoClient("localhost", 27017), getMongoName());
         datastore.ensureIndexes();
         Indexes indexes = datastore.createQuery(Indexes.class).get();
         if (indexes == null) {
@@ -29,7 +32,7 @@ public class MongoDao implements IDao {
         }
     }
 
-    public synchronized static MongoDao getInstance(){
+    public synchronized static IDao getInstance(){
         if(mongoDao == null){
             mongoDao = new MongoDao();
         }
