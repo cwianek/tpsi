@@ -94,9 +94,17 @@ public class MongoDao implements IDao {
     @Override
     public int getNextStudentIndex() {
         Query<Indexes> query = datastore.createQuery(Indexes.class).limit(1);
-        UpdateOperations<Indexes> updateOperation = datastore.createUpdateOperations(Indexes.class).inc("index");
-        return datastore.findAndModify(query, updateOperation, false, false).getIndex();
+        UpdateOperations<Indexes> updateOperation = datastore.createUpdateOperations(Indexes.class).inc("studentIndex");
+        return datastore.findAndModify(query, updateOperation, false, false).getStudentIndex();
     }
+
+    @Override
+    public int getNextMarkId() {
+        Query<Indexes> query = datastore.createQuery(Indexes.class).limit(1);
+        UpdateOperations<Indexes> updateOperation = datastore.createUpdateOperations(Indexes.class).inc("markId");
+        return datastore.findAndModify(query, updateOperation, false, false).getMarkId();
+    }
+
 
     @Override
     public void delete(Object object) {

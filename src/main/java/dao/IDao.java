@@ -20,4 +20,5 @@ public interface IDao {
 
         void delete(Object object);
         int getNextStudentIndex();
+        int getNextMarkId();
 }

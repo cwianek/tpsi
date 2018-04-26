@@ -10,5 +10,10 @@ import org.mongodb.morphia.annotations.Entity;
 public class Indexes {
     @Getter
     @Setter
-    private int index;
+    private int studentIndex;
+
+    @Getter
+    @Setter
+    private int markId;
+
 }

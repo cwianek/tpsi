@@ -44,19 +44,10 @@ public class MarksService {
 
     public Mark addMark(int index, Mark mark) {
         Student student = dao.getStudent(index);
-        mark.setId(getNextMarkId(student));
+        mark.setId(dao.getNextMarkId());
         student.getMarkList().add(mark);
         dao.updateStudent(student);
         return mark;
-    }
-
-    private int getNextMarkId(Student student){
-        int max = 0;
-        for(Mark mark: student.getMarkList()){
-            if(mark.getId() > max)
-                max = mark.getId();
-        }
-        return max+1;
     }
 
     public void deleteMark(int index, int id) {

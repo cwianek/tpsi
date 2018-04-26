@@ -2,6 +2,8 @@ package service;
 
 import dao.IDao;
 import dao.MongoDao;
+import models.Mark;
+import models.Student;
 import models.Subject;
 import org.bson.types.ObjectId;
 
@@ -39,6 +41,14 @@ public class SubjectsService {
     }
 
     public void deleteSubject(Subject subject){
+        for(Student student: dao.getStudents()){
+            for(Mark mark: student.getMarkList()){
+                if(mark.getSubject().getId().equals(subject.getId())){
+                    MarksService marksService = MarksService.getInstance();
+                    marksService.deleteMark(student.getIndex(),mark.getId());
+                }
+            }
+        }
         dao.delete(subject);
     }
 
