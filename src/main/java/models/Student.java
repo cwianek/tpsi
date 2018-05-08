@@ -69,7 +69,7 @@ public class Student {
     @Getter
     private String surname;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",  timezone="CET")
     @Setter
     @Getter
     private Date birthdate;

@@ -1,11 +1,12 @@
 package service;
 
-import common.Utils;
 import dao.IDao;
 import dao.MongoDao;
 import models.Mark;
 import models.Student;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -16,9 +17,33 @@ public class MarksService {
     private static MarksService marksService;
     private MarksService() {}
 
-    public List<Mark> getMarks(int index) {
+    public List<Mark> getMarks(int index, MultivaluedMap<String, String> params) {
         Student student = dao.getStudent(index);
-        return student.getMarkList();
+        List<Mark> marks = student.getMarkList();
+        if(params.containsKey("subject")){
+            marks.removeIf(mark -> !mark.getSubject().getId().toString().contains(params.getFirst("subject")));
+        }
+        if(params.containsKey("mark")) {
+            float mark = Float.parseFloat(params.getFirst("mark"));
+            String op = "";
+            if(params.containsKey("op")) {
+                op = params.getFirst("op");
+            }
+            switch(op) {
+                case "gt":
+                    marks.removeIf(m -> Float.parseFloat(m.getValue()) <= mark);
+                    break;
+                case "":
+                    marks.removeIf(m -> Float.parseFloat(m.getValue()) != mark);
+                    break;
+                case "lt":
+                    marks.removeIf(m -> Float.parseFloat(m.getValue()) >= mark);
+                    break;
+                default:
+                    throw new BadRequestException();
+            }
+        }
+        return marks;
     }
 
     public Mark getMark(int index, int id) {

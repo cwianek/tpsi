@@ -10,7 +10,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.net.URI;
 import java.util.List;
 
 @Path("subjects")
@@ -20,8 +19,8 @@ public class SubjectsResource {
     private SubjectsService subjectsService = SubjectsService.getInstance();
 
     @GET
-    public List<Subject> getSubjects() {
-        return subjectsService.getSubjects();
+    public List<Subject> getSubjects(@Context UriInfo uriInfo) {
+        return subjectsService.getSubjects(uriInfo.getQueryParameters());
     }
 
     @POST

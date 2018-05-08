@@ -18,8 +18,8 @@ public class MarksResource {
     }
 
     @GET
-    public List<Mark> getStudentMarks() {
-        return marksService.getMarks(index);
+    public List<Mark> getStudentMarks(@Context UriInfo uriInfo) {
+        return marksService.getMarks(index, uriInfo.getQueryParameters());
     }
 
     @POST

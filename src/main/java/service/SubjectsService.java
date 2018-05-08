@@ -2,11 +2,10 @@ package service;
 
 import dao.IDao;
 import dao.MongoDao;
-import models.Mark;
-import models.Student;
 import models.Subject;
 import org.bson.types.ObjectId;
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -21,13 +20,12 @@ public class SubjectsService {
         return dao.getSubject(id);
     }
 
-    public List<Subject> getSubjects(){
-        return dao.getSubjects();
+    public List<Subject> getSubjects(MultivaluedMap<String, String> params){
+        return dao.getSubjects(params);
     }
 
     public Subject addSubject(Subject subject){
-        Subject newSubject = dao.saveSubject(subject);
-        return newSubject;
+        return dao.saveSubject(subject);
     }
 
     public URI getSubjectPath(Subject subject, UriInfo uriInfo){
@@ -41,14 +39,6 @@ public class SubjectsService {
     }
 
     public void deleteSubject(Subject subject){
-        for(Student student: dao.getStudents()){
-            for(Mark mark: student.getMarkList()){
-                if(mark.getSubject().getId().equals(subject.getId())){
-                    MarksService marksService = MarksService.getInstance();
-                    marksService.deleteMark(student.getIndex(),mark.getId());
-                }
-            }
-        }
         dao.delete(subject);
     }
 

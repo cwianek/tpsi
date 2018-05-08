@@ -5,6 +5,8 @@ import models.Mark;
 import models.Student;
 import models.Subject;
 
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -19,8 +21,8 @@ public class StudentsService {
         return dao.getStudent(index);
     }
 
-    public List<Student> getStudentList(){
-        return dao.getStudents();
+    public List<Student> getStudentList(MultivaluedMap<String, String> params){
+        return dao.getStudents(params);
     }
 
     public URI addStudent(Student student, UriInfo uriInfo){

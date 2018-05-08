@@ -31,7 +31,7 @@ public class StudentsResource {
 
     @GET
     public List<Student> getStudents() {
-        return studentsService.getStudentList();
+        return studentsService.getStudentList(uriInfo.getQueryParameters());
     }
     
     @POST

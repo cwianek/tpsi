@@ -1,10 +1,8 @@
 package dao;
 
 import com.mongodb.MongoClient;
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import lombok.Getter;
 import models.Indexes;
-import models.Mark;
 import models.Student;
 import models.Subject;
 import org.bson.types.ObjectId;
@@ -14,15 +12,22 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.core.MultivaluedMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Date;
+
 
 public class MongoDao implements IDao {
-    @Getter  protected String mongoName = "TPSI";
+    @Getter
+    protected String mongoName = "TPSI";
     protected static IDao mongoDao;
     private final static Morphia morphia = new Morphia();
     private static Datastore datastore;
 
-    protected MongoDao(){
+    protected MongoDao() {
         morphia.mapPackage("model");
         datastore = morphia.createDatastore(new MongoClient("localhost", 27017), getMongoName());
         datastore.ensureIndexes();
@@ -32,8 +37,8 @@ public class MongoDao implements IDao {
         }
     }
 
-    public synchronized static IDao getInstance(){
-        if(mongoDao == null){
+    public synchronized static IDao getInstance() {
+        if (mongoDao == null) {
             mongoDao = new MongoDao();
         }
         return mongoDao;
@@ -42,8 +47,37 @@ public class MongoDao implements IDao {
     //students
 
     @Override
-    public List<Student> getStudents() {
-         return datastore.createQuery(Student.class).asList();
+    public List<Student> getStudents(MultivaluedMap<String, String> params) {
+        Query<Student> query = datastore.createQuery(Student.class);
+        for (String key : new String[]{"name", "surname"}) {
+            if (params.containsKey(key))
+                query.field(key).containsIgnoreCase(params.getFirst(key));
+        }
+        String birthdate = "birthdate";
+        if(params.containsKey(birthdate)){
+            Date date = null;
+            try {
+                date = new SimpleDateFormat("yyyy-MM-dd").parse(params.getFirst(birthdate));
+            } catch (ParseException e) {
+                throw new BadRequestException();
+            }
+            String op = "";
+            if(params.containsKey("op")){
+                op = params.getFirst("op");
+            }
+            switch (op){
+                case "gt":
+                    query.field(birthdate).greaterThan(date);
+                    break;
+                case "lt":
+                    query.field(birthdate).lessThan(date);
+                    break;
+                default:
+                    query.field(birthdate).equal(date);
+            }
+
+        }
+        return query.asList();
     }
 
     @Override
@@ -68,8 +102,13 @@ public class MongoDao implements IDao {
     //subjects
 
     @Override
-    public List<Subject> getSubjects() {
-        return datastore.createQuery(Subject.class).asList();
+    public List<Subject> getSubjects(MultivaluedMap<String,String> params) {
+        Query<Subject> query = datastore.createQuery(Subject.class);
+        String lecturer = "lecturer";
+        if(params.containsKey(lecturer)){
+            query.field(lecturer).containsIgnoreCase(params.getFirst(lecturer));
+        }
+        return query.asList();
     }
 
     @Override
@@ -79,7 +118,7 @@ public class MongoDao implements IDao {
 
     @Override
     public Subject saveSubject(Subject subject) {
-        Key<Subject> key =  datastore.save(subject);
+        Key<Subject> key = datastore.save(subject);
         subject.setId((ObjectId) key.getId());
         return subject;
     }
